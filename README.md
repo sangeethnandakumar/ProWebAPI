@@ -260,7 +260,7 @@ Configure OData
             });
 ```
 Decorate the Action Methord
-```
+```csharp
         [HttpGet]
         [MapToApiVersion("2.0")]
         [Route("Success")]
@@ -275,6 +275,7 @@ Decorate the Action Methord
             return Ok(listOfData);
         }
 ```
+> Currentl implementation didn't support on StandardResponses
 Query by URL
 ```url
 https://localhost:44351/api/v2/Students/Success?   $select=name,age   &$orderby=age desc   &$filter=age gt 10   &$top=4&$skip=1
