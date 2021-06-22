@@ -83,6 +83,12 @@ Decorate the controllers base on the need
         public Response Failure()
         {
         }
+               
+        [HttpPost]
+        [Route("Submit")]
+        public Response Submit(User user)
+        {
+        }
     }
 ```
 
