@@ -92,11 +92,11 @@ Install Nuget library
     FluentValidation.AspNetCore
 ```
 Register validators on DI
-```
+```csharp
  services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
 ```
 On the 'RequestDto' Namespace, Add the validators along with dto
-```
+```csharp
 namespace ProWebAPI.RequestDtos
 {
     public class User
