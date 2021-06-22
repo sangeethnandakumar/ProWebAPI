@@ -7,7 +7,7 @@ ASP.NET Core API with all proper standards
 | Standard Response | Implementation of a standard response pattern for DTO and internal
 | Versioning | Supports versioned endpoints 'api/v1/' using API versioning
 
-### Swagger
+# Swagger
 Install Swagger
 ```
 Swashbuckle.AspNetCore
@@ -42,7 +42,7 @@ Setup DI
         }
 ```
 
-### Versioning
+# Versioning
 Install Nuget library
 ```nuget
     Microsoft.AspNetCore.Mvc.Versioning
@@ -86,7 +86,7 @@ Decorate the controllers base on the need
     }
 ```
 
-### Request Validator
+# Request Validator
 Install Nuget library
 ```nuget
     FluentValidation.AspNetCore
