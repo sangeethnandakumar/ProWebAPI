@@ -48,7 +48,7 @@ Install Nuget library
     Microsoft.AspNetCore.Mvc.Versioning
 ```
 Add to dependency container
-```
+```csharp
    services.AddApiVersioning(options =>
             {
                 options.AssumeDefaultVersionWhenUnspecified = true;
@@ -57,7 +57,7 @@ Add to dependency container
             });
 ```
 Decorate the controllers base on the need
-```
+```csharp
     [ApiController]
     [ApiVersion("1.0")]
     [ApiVersion("2.0")]
