@@ -13,7 +13,7 @@ Install Swagger
 Swashbuckle.AspNetCore
 ```
 Setup DI
-```
+```csharp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
@@ -118,7 +118,7 @@ namespace ProWebAPI.RequestDtos
 }
 ```
 Build a ValidationFilter
-```
+```csharp
 namespace ProWebAPI.Filters
 {
     public class ValidationFilter : IAsyncActionFilter
@@ -156,7 +156,7 @@ namespace ProWebAPI.Filters
 }
 ```
 Register the filter and turn off [ApiController] auto 400 Bad Request intercept
-```
+```csharp
   public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
