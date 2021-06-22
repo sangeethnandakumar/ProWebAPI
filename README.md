@@ -188,3 +188,45 @@ Register the filter and turn off [ApiController] auto 400 Bad Request intercept
             });
         }
 ```
+
+# AppSettings.json
+Configure appsettings for databases
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "DataConnections": {
+    "DatabaseOne": {
+      "IsStandardSecurity": false,
+      "Server": "DESKTOP//SQLSERVER",
+      "Catalogue": "MyDatabase",
+      "Username": "sangee",
+      "Password": "password@123"
+    },
+    "DatabaseTwo": {
+      "IsStandardSecurity": false,
+      "Server": "DESKTOP//SQLSERVER",
+      "Catalogue": "MyDatabase",
+      "Username": "sangee",
+      "Password": "password@123"
+    },
+    "DatabaseThree": {
+      "IsStandardSecurity": false,
+      "Server": "DESKTOP//SQLSERVER",
+      "Catalogue": "MyDatabase",
+      "Username": "sangee",
+      "Password": "password@123"
+    }
+  }
+}
+```
+Create 2 ENVIRONMENT configurations
+```
+appsettings.Development.json
+appsettings.Production.json
+```
