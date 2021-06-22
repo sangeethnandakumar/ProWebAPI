@@ -86,5 +86,99 @@ Decorate the controllers base on the need
     }
 ```
 
-### Repository Contents
-This repo maintains 2 projects. The main library and a demo project to implement it
+### Request Validator
+Install Nuget library
+```nuget
+    FluentValidation.AspNetCore
+```
+Register validators on DI
+```
+ services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
+```
+On the 'RequestDto' Namespace, Add the validators along with dto
+```
+namespace ProWebAPI.RequestDtos
+{
+    public class User
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int Age { get; set; }
+    }
+
+    public class UserValidator : AbstractValidator<User>
+    {
+        public UserValidator()
+        {
+            RuleFor(x => x.FirstName).NotNull().NotEmpty();
+            RuleFor(x => x.LastName).NotNull().NotEmpty();
+            RuleFor(x => x.Age).NotNull().GreaterThan(0).LessThan(150).NotEmpty();
+        }
+    }
+}
+```
+Build a ValidationFilter
+```
+namespace ProWebAPI.Filters
+{
+    public class ValidationFilter : IAsyncActionFilter
+    {
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        {
+            if (!context.ModelState.IsValid)
+            {
+                var errorResponse = new ErrorResponse
+                {
+                    ErrorCode = ErrorCodes.ERR01.ToString(),
+                    Message = "Data submitted is not in correct format",
+                    Status = ResponseStatus.WARNING.ToString()
+                };
+
+                var errorModalState = context.ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .ToDictionary(kv => kv.Key, kv => kv.Value.Errors.Select(x => x.ErrorMessage))
+                    .ToArray();
+
+                foreach (var error in errorModalState)
+                {
+                    foreach (var subError in error.Value)
+                    {
+                        errorResponse.Info.Add($"{error.Key}: {subError}");
+                    }
+                }
+
+                context.Result = new BadRequestObjectResult(errorResponse);
+                return;
+            }
+            await next();
+        }
+    }
+}
+```
+Register the filter and turn off [ApiController] auto 400 Bad Request intercept
+```
+  public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddControllers()
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.SuppressModelStateInvalidFilter = true;
+                });
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProWebAPI", Version = "v1" });
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+            });
+            services.AddApiVersioning(options =>
+            {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.ReportApiVersions = true;
+            });
+            services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
+            services.AddMvc(options =>
+            {
+                options.Filters.Add<ValidationFilter>();
+            });
+        }
+```
