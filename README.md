@@ -5,7 +5,9 @@ ASP.NET Core API with all proper standards
 | Name | Description
 | ------ | ------
 | Standard Response | Implementation of a standard response pattern for DTO and internal
-| Versioning | Supports versioned endpoints 'api/v1/' using API versioning
+| Versioning | Supports versioned endpoints 'api/v1/' using API versioningccc
+| Environment Variable | Dynamic environment based appsettings and configurations
+| OData | Support for endpoints with OData for easy client manipulation
 
 # Swagger
 Install Swagger
