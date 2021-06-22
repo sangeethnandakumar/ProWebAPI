@@ -7,7 +7,7 @@ ASP.NET Core API with all proper standards
 | Standard Response | Implementation of a standard response pattern for DTO and internal
 | Versioning | Supports versioned endpoints 'api/v1/' using API versioningccc
 | Environment Variable | Dynamic environment based appsettings and configurations
-| OData | Support for endpoints with OData for easy client manipulation
+| OData v4 | Support for endpoints with OData for easy client manipulation
 
 # Swagger
 Install Swagger
@@ -231,4 +231,31 @@ Create 2 ENVIRONMENT configurations
 ```
 appsettings.Development.json
 appsettings.Production.json
+```
+
+# OData v4
+To support OData Install the NuGetpackages
+```
+Microsoft.AspNetCore.Mvc.NewtonsoftJson
+Microsoft.AspNetCore.OData
+OData.Swagger
+```
+Add to service DI for OData
+```csharp
+   services.AddControllers().AddNewtonsoftJson();
+   ..
+   ...
+   ....
+   .....
+   services.AddOData();
+   services.AddOdataSwaggerSupport();
+```
+Configure OData
+```csharp
+ app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.EnableDependencyInjection();
+                endpoints.Select().Count().Filter().OrderBy().MaxTop(100);
+            });
 ```
