@@ -259,3 +259,23 @@ Configure OData
                 endpoints.Select().Count().Filter().OrderBy().MaxTop(100);
             });
 ```
+Decorate the Action Methord
+```
+        [HttpGet]
+        [MapToApiVersion("2.0")]
+        [Route("Success")]
+        [EnableQuery]
+        public IActionResult Success20()
+        {
+            var listOfData = new List<Student>();
+            listOfData.Add(new Student { Name = "Sangeeth", Age = 10 });
+            listOfData.Add(new Student { Name = "Navaneeth", Age = 11 });
+            listOfData.Add(new Student { Name = "Surya", Age = 12 });
+            listOfData.Add(new Student { Name = "Nandakumar", Age = 13 });
+            return Ok(listOfData);
+        }
+```
+Query by URL
+```url
+https://localhost:44351/api/v2/Students/Success?   $select=name,age   &$orderby=age desc   &$filter=age gt 10   &$top=4&$skip=1
+```
