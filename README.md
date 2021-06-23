@@ -5,7 +5,9 @@ ASP.NET Core API with all proper standards
 | Name | Description
 | ------ | ------
 | Standard Response | Implementation of a standard response pattern for DTO and internal
-| Versioning | Supports versioned endpoints 'api/v1/' using API versioning
+| Versioning | Supports versioned endpoints 'api/v1/' using API versioningccc
+| Environment Variable | Dynamic environment based appsettings and configurations
+| OData v4 | Support for endpoints with OData for easy client manipulation
 
 # Swagger
 Install Swagger
@@ -118,7 +120,7 @@ namespace ProWebAPI.RequestDtos
         {
             RuleFor(x => x.FirstName).NotNull().NotEmpty();
             RuleFor(x => x.LastName).NotNull().NotEmpty();
-            RuleFor(x => x.Age).NotNull().GreaterThan(0).LessThan(150).NotEmpty();
+            endpoints.Select().Count().Filter().OrderBy().MaxTop(100).Expand();
         }
     }
 }
@@ -187,4 +189,94 @@ Register the filter and turn off [ApiController] auto 400 Bad Request intercept
                 options.Filters.Add<ValidationFilter>();
             });
         }
+```
+
+# AppSettings.json
+Configure appsettings for databases
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "DataConnections": {
+    "DatabaseOne": {
+      "IsStandardSecurity": false,
+      "Server": "DESKTOP//SQLSERVER",
+      "Catalogue": "MyDatabase",
+      "Username": "sangee",
+      "Password": "password@123"
+    },
+    "DatabaseTwo": {
+      "IsStandardSecurity": false,
+      "Server": "DESKTOP//SQLSERVER",
+      "Catalogue": "MyDatabase",
+      "Username": "sangee",
+      "Password": "password@123"
+    },
+    "DatabaseThree": {
+      "IsStandardSecurity": false,
+      "Server": "DESKTOP//SQLSERVER",
+      "Catalogue": "MyDatabase",
+      "Username": "sangee",
+      "Password": "password@123"
+    }
+  }
+}
+```
+Create 2 ENVIRONMENT configurations
+```
+appsettings.Development.json
+appsettings.Production.json
+```
+
+# OData v4
+To support OData Install the NuGetpackages
+```
+Microsoft.AspNetCore.Mvc.NewtonsoftJson
+Microsoft.AspNetCore.OData
+OData.Swagger
+```
+Add to service DI for OData
+```csharp
+   services.AddControllers().AddNewtonsoftJson();
+   ..
+   ...
+   ....
+   .....
+   services.AddOData();
+   services.AddOdataSwaggerSupport();
+```
+Configure OData
+```csharp
+ app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.EnableDependencyInjection();
+                endpoints.Select().Count().Filter().OrderBy().MaxTop(100);
+            });
+```
+Decorate the Action Methord
+```csharp
+        [HttpGet]
+        [MapToApiVersion("2.0")]
+        [Route("Success")]
+        [EnableQuery]
+        public IActionResult Success20()
+        {
+            var listOfData = new List<Student>();
+            listOfData.Add(new Student { Name = "Student A", Age = 10 });
+            listOfData.Add(new Student { Name = "Student B", Age = 11 });
+            listOfData.Add(new Student { Name = "Student C", Age = 12 });
+            listOfData.Add(new Student { Name = "Student D", Age = 13 });
+            return Ok(listOfData);
+        }
+```
+
+Query by URL
+```url
+https://localhost:44351/api/v2/Students/Success?   $expand=data(  $filter= age gt 11; $orderby=Name desc; $select=Name  )
 ```
