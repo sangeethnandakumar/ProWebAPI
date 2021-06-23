@@ -8,6 +8,7 @@ ASP.NET Core API with all proper standards
 | Versioning | Supports versioned endpoints 'api/v1/' using API versioningccc
 | Environment Variable | Dynamic environment based appsettings and configurations
 | OData v4 | Support for endpoints with OData for easy client manipulation
+| Global Exception Handler | Enables standard error response for any 500 server errors
 
 # Swagger
 Install Swagger
@@ -313,3 +314,5 @@ Query by URL
 ```url
 https://localhost:44351/api/v2/Students/Success?   $expand=data(  $filter= age gt 11; $orderby=Name desc; $select=Name  )
 ```
+
+# Global Exception Handler
