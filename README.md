@@ -278,5 +278,5 @@ Decorate the Action Methord
 
 Query by URL
 ```url
-https://localhost:44351/api/v2/Students/Success?   $expand=data($filter= age gt 11;    $orderby=Name desc;  $select=Name)
+https://localhost:44351/api/v2/Students/Success?   $expand=data(  $filter= age gt 11; $orderby=Name desc; $select=Name  )
 ```
