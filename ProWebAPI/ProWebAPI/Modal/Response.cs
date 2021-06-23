@@ -15,11 +15,13 @@ namespace ProWebAPI.Modal
     public enum ErrorCodes
     {
         //RESERVED
-        ERR01, // => Invalid request payload
-        ERR02, // => Unsupported OData Query
+        ERR01, // => Invalid request validation (400)
+
+        ERR02, // => Unsupported OData Query (400)
+        ERR03, // => Unhandled exception on server (500)
 
         //CUSTOM CODES
-        ERR03
+        ERR04
     }
 
     public class Response

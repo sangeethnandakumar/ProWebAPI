@@ -30,7 +30,22 @@ namespace ProWebAPI.Attributes
                     Status = ResponseStatus.WARNING.ToString()
                 };
 
-                request.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                request.HttpContext.Response.ContentType = "application/json";
+                request.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+                request.HttpContext.Response.WriteAsJsonAsync(errorResponse);
+                return;
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = new ErrorResponse
+                {
+                    ErrorCode = ErrorCodes.ERR03.ToString(),
+                    Message = "Something went wrong",
+                    Status = ResponseStatus.FAILED.ToString(),
+                    Info = new List<string>() { "An operation on the server resulted in failure" }
+                };
+                request.HttpContext.Response.ContentType = "application/json";
+                request.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 request.HttpContext.Response.WriteAsJsonAsync(errorResponse);
                 return;
             }

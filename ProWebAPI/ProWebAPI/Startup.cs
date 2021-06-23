@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using OData.Swagger.Services;
+using ProWebAPI.Extensions;
 using ProWebAPI.Filters;
 using System;
 using System.Collections.Generic;
@@ -30,12 +31,18 @@ namespace ProWebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
-                .AddNewtonsoftJson()
-                .ConfigureApiBehaviorOptions(options =>
-                {
-                    options.SuppressModelStateInvalidFilter = true;
-                });
+            services.AddControllers(options =>
+            {
+                options.Filters.Add<ValidationFilter>();
+            })
+            .AddNewtonsoftJson(options =>
+            {
+                options.UseMemberCasing();
+            })
+            .ConfigureApiBehaviorOptions(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProWebAPI", Version = "v1" });
@@ -48,10 +55,6 @@ namespace ProWebAPI
                 options.ReportApiVersions = true;
             });
             services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
-            services.AddMvc(options =>
-            {
-                options.Filters.Add<ValidationFilter>();
-            });
             services.AddOData();
             services.AddOdataSwaggerSupport();
         }
@@ -68,6 +71,7 @@ namespace ProWebAPI
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseGlobalExceptionHandler();
 
             app.UseEndpoints(endpoints =>
             {
