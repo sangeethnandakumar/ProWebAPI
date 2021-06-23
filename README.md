@@ -4,6 +4,7 @@ ASP.NET Core API with all proper standards
 ### Standards Implemented
 | Name | Description
 | ------ | ------
+| Swagger | Implementation of Swagger OpenAPI standards
 | Standard Response | Implementation of a standard response pattern for DTO and internal
 | Versioning | Supports versioned endpoints 'api/v1/' using API versioningccc
 | Environment Variable | Dynamic environment based appsettings and configurations
@@ -43,6 +44,71 @@ Setup DI
                 endpoints.MapControllers();
             });
         }
+```
+
+# Standard Resoponse for API
+Standard response
+```csharp
+namespace ProWebAPI.Modal
+{
+    public enum ResponseStatus
+    {
+        SUCCESS,
+        WARNING,
+        FAILED
+    }
+
+    public enum ErrorCodes
+    {
+        //RESERVED
+        ERR01, // => Invalid request validation (400)
+
+        ERR02, // => Unsupported OData Query (400)
+        ERR03, // => Unhandled exception on server (500)
+
+        //CUSTOM CODES
+        ERR04
+    }
+
+    public class Response
+    {
+        protected ResponseStatus ResponseStatus { get; set; }
+        public string Status { get; set; }
+    }
+
+    public class SuccessResponse<T> : Response
+    {
+        public T Data { get; set; }
+
+        public SuccessResponse()
+        {
+            ResponseStatus = ResponseStatus.SUCCESS;
+            Status = ResponseStatus.SUCCESS.ToString();
+        }
+    }
+
+    public class ErrorResponse : Response
+    {
+        public string ErrorCode { get; set; }
+        public string Message { get; set; }
+        public List<string> Info { get; set; }
+
+        public ErrorResponse()
+        {
+            ResponseStatus = ResponseStatus.FAILED;
+            Status = ResponseStatus.FAILED.ToString();
+            ErrorCode = ErrorCodes.ERR01.ToString();
+            Info = new List<string>();
+        }
+    }
+
+    public class Dto<T>
+    {
+        public bool IsSuccess { get; set; }
+        public string Error { get; set; }
+        public T Data { get; set; }
+    }
+}
 ```
 
 # Versioning
@@ -170,6 +236,10 @@ Register the filter and turn off [ApiController] auto 400 Bad Request intercept
             {
                 options.Filters.Add<ValidationFilter>();
             })
+             .ConfigureApiBehaviorOptions(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
 ```
 
 # AppSettings.json
@@ -237,7 +307,7 @@ Configure OData
             {
                 endpoints.MapControllers();
                 endpoints.EnableDependencyInjection();
-                endpoints.Select().Count().Filter().OrderBy().MaxTop(100);
+                endpoints.Select().Count().Filter().OrderBy().MaxTop(100).Expand();
             });
 ```
 Override [EnableQuery] attribute with [EnableOData] to catch errors and return standard response
