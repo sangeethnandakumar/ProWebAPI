@@ -259,12 +259,42 @@ Configure OData
                 endpoints.Select().Count().Filter().OrderBy().MaxTop(100);
             });
 ```
+Override [EnableQuery] attribute with [EnableOData] to catch errors and return standard response
+```csharp
+namespace ProWebAPI.Attributes
+{
+    public class EnableODataAttribute : EnableQueryAttribute
+    {
+        public override void ValidateQuery(HttpRequest request, ODataQueryOptions queryOptions)
+        {
+            try
+            {
+                base.ValidateQuery(request, queryOptions);
+            }
+            catch (ODataException ex)
+            {
+                var errorResponse = new ErrorResponse
+                {
+                    ErrorCode = ErrorCodes.ERR02.ToString(),
+                    Message = "Unsupported OData query",
+                    Info = new List<string>() { ex.Message },
+                    Status = ResponseStatus.WARNING.ToString()
+                };
+
+                request.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                request.HttpContext.Response.WriteAsJsonAsync(errorResponse);
+                return;
+            }
+        }
+    }
+}
+```
 Decorate the Action Methord
 ```csharp
         [HttpGet]
         [MapToApiVersion("2.0")]
         [Route("Success")]
-        [EnableQuery]
+        [EnableOData]
         public IActionResult Success20()
         {
             var listOfData = new List<Student>();
@@ -272,7 +302,10 @@ Decorate the Action Methord
             listOfData.Add(new Student { Name = "Student B", Age = 11 });
             listOfData.Add(new Student { Name = "Student C", Age = 12 });
             listOfData.Add(new Student { Name = "Student D", Age = 13 });
-            return Ok(listOfData);
+            return Ok(new SuccessResponse<List<Student>>
+            {
+                Data = listOfData
+            });
         }
 ```
 
