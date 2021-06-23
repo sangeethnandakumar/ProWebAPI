@@ -166,30 +166,10 @@ namespace ProWebAPI.Filters
 ```
 Register the filter and turn off [ApiController] auto 400 Bad Request intercept
 ```csharp
-  public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddControllers()
-                .ConfigureApiBehaviorOptions(options =>
-                {
-                    options.SuppressModelStateInvalidFilter = true;
-                });
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProWebAPI", Version = "v1" });
-                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
-            });
-            services.AddApiVersioning(options =>
-            {
-                options.AssumeDefaultVersionWhenUnspecified = true;
-                options.DefaultApiVersion = new ApiVersion(1, 0);
-                options.ReportApiVersions = true;
-            });
-            services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
-            services.AddMvc(options =>
+ services.AddControllers(options =>
             {
                 options.Filters.Add<ValidationFilter>();
-            });
-        }
+            })
 ```
 
 # AppSettings.json
