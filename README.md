@@ -10,6 +10,7 @@ ASP.NET Core API with all proper standards
 | Environment Variable | Dynamic environment based appsettings and configurations
 | OData v4 | Support for endpoints with OData for easy client manipulation
 | Global Exception Handler | Enables standard error response for any 500 server errors
+| Response Casing | Pascal casing with Newtonsoft
 
 # Swagger
 Install Swagger
@@ -439,4 +440,14 @@ namespace ProWebAPI.Extensions
 Register the middleware
 ```csharp
 app.UseGlobalExceptionHandler();
+```
+
+# Response Casing
+Allow member casing (which will be in pascal case for props) so that OData query result won't conflict with casing
+```csharp
+ services.AddControllers()
+            .AddNewtonsoftJson(options =>
+            {
+                options.UseMemberCasing();
+            })
 ```
