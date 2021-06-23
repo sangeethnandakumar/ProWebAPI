@@ -11,6 +11,8 @@ ASP.NET Core API with all proper standards
 | OData v4 | Support for endpoints with OData for easy client manipulation
 | Global Exception Handler | Enables standard error response for any 500 server errors
 | Response Casing | Pascal casing with Newtonsoft
+| OAuth v2 | Add support for OAuth from other repo (No imp here)
+| Redis Cache | Implementing caching with Redis
 
 # Swagger
 Install Swagger
@@ -451,3 +453,5 @@ Allow member casing (which will be in pascal case for props) so that OData query
                 options.UseMemberCasing();
             })
 ```
+
+# Redis Cache
