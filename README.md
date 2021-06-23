@@ -282,7 +282,22 @@ namespace ProWebAPI.Attributes
                     Status = ResponseStatus.WARNING.ToString()
                 };
 
-                request.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                request.HttpContext.Response.ContentType = "application/json";
+                request.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+                request.HttpContext.Response.WriteAsJsonAsync(errorResponse);
+                return;
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = new ErrorResponse
+                {
+                    ErrorCode = ErrorCodes.ERR03.ToString(),
+                    Message = "Something went wrong",
+                    Status = ResponseStatus.FAILED.ToString(),
+                    Info = new List<string>() { "An operation on the server resulted in failure" }
+                };
+                request.HttpContext.Response.ContentType = "application/json";
+                request.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 request.HttpContext.Response.WriteAsJsonAsync(errorResponse);
                 return;
             }
@@ -316,3 +331,62 @@ https://localhost:44351/api/v2/Students/Success?   $expand=data(  $filter= age g
 ```
 
 # Global Exception Handler
+Create the Middleware
+```csharp
+namespace ProWebAPI.Middlewares
+{
+    public class ExceptionMiddleware
+    {
+        private readonly RequestDelegate _next;
+
+        public ExceptionMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task InvokeAsync(HttpContext context)
+        {
+            try
+            {
+                await _next(context);
+            }
+            catch (Exception)
+            {
+                //Write exception log here
+                await HandleExceptionAsync(context);
+            }
+        }
+
+        private Task HandleExceptionAsync(HttpContext context)
+        {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            var serverError = new ErrorResponse
+            {
+                ErrorCode = ErrorCodes.ERR03.ToString(),
+                Message = "Something went wrong",
+                Status = ResponseStatus.FAILED.ToString(),
+                Info = new List<string>() { "An operation on the server resulted in failure" }
+            };
+            return context.Response.WriteAsJsonAsync(serverError);
+        }
+    }
+}
+```
+Create an extension methord for app builder
+```csharp
+namespace ProWebAPI.Extensions
+{
+    public static class ExceptionExtensions
+    {
+        public static void UseGlobalExceptionHandler(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<ExceptionMiddleware>();
+        }
+    }
+}
+```
+Register the middleware
+```csharp
+app.UseGlobalExceptionHandler();
+```
