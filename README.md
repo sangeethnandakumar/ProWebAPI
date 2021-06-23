@@ -187,7 +187,7 @@ namespace ProWebAPI.RequestDtos
         {
             RuleFor(x => x.FirstName).NotNull().NotEmpty();
             RuleFor(x => x.LastName).NotNull().NotEmpty();
-            endpoints.Select().Count().Filter().OrderBy().MaxTop(100).Expand();
+            RuleFor(x => x.Age).NotNull().GreaterThan(0).LessThan(150).NotEmpty();
         }
     }
 }
