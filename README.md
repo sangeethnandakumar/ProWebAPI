@@ -120,7 +120,7 @@ namespace ProWebAPI.RequestDtos
         {
             RuleFor(x => x.FirstName).NotNull().NotEmpty();
             RuleFor(x => x.LastName).NotNull().NotEmpty();
-            RuleFor(x => x.Age).NotNull().GreaterThan(0).LessThan(150).NotEmpty();
+            endpoints.Select().Count().Filter().OrderBy().MaxTop(100).Expand();
         }
     }
 }
@@ -268,16 +268,15 @@ Decorate the Action Methord
         public IActionResult Success20()
         {
             var listOfData = new List<Student>();
-            listOfData.Add(new Student { Name = "Sangeeth", Age = 10 });
-            listOfData.Add(new Student { Name = "Navaneeth", Age = 11 });
-            listOfData.Add(new Student { Name = "Surya", Age = 12 });
-            listOfData.Add(new Student { Name = "Nandakumar", Age = 13 });
+            listOfData.Add(new Student { Name = "Student A", Age = 10 });
+            listOfData.Add(new Student { Name = "Student B", Age = 11 });
+            listOfData.Add(new Student { Name = "Student C", Age = 12 });
+            listOfData.Add(new Student { Name = "Student D", Age = 13 });
             return Ok(listOfData);
         }
 ```
-> Current implementation didn't support under STANDARD RESPONSES
 
 Query by URL
 ```url
-https://localhost:44351/api/v2/Students/Success?   $select=name,age   &$orderby=age desc   &$filter=age gt 10   &$top=4&$skip=1
+https://localhost:44351/api/v2/Students/Success?   $expand=data($filter= age gt 11)
 ```
