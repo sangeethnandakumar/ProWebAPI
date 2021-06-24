@@ -22,7 +22,7 @@ namespace ProWebAPI.Middlewares
             {
                 await _next(context);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //Write exception log here
                 await HandleExceptionAsync(context);

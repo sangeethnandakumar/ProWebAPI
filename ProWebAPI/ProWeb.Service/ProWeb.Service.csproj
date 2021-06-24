@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<AssemblyName>ProWeb.Service</AssemblyName>
+		<RootNamespace>ProWeb.Service</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Twileloop.ExpressSecurity" Version="1.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\ProWeb.Commons\ProWeb.Commons.csproj" />
+	  <ProjectReference Include="..\ProWeb.Data\ProWeb.Data.csproj" />
+	  <ProjectReference Include="..\ProWeb.Entities\ProWeb.Entities.csproj" />
+	</ItemGroup>
+</Project>

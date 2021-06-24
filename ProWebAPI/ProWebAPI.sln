@@ -3,7 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProWebAPI", "ProWebAPI\ProWebAPI.csproj", "{94B32A72-2EB5-4C23-A920-75DA1850D81C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProWebAPI", "ProWebAPI\ProWebAPI.csproj", "{94B32A72-2EB5-4C23-A920-75DA1850D81C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProWeb.Service", "ProWeb.Service\ProWeb.Service.csproj", "{54C10275-1EDD-4BB7-AA46-46A1392A7DB5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProWeb.Entities", "ProWeb.Entities\ProWeb.Entities.csproj", "{954772A2-4C28-46FB-BA66-6CA4C3554D7F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProWeb.Data", "ProWeb.Data\ProWeb.Data.csproj", "{A03BB365-3A53-4FFC-A49C-EB1AC9C14251}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProWeb.Commons", "ProWeb.Commons\ProWeb.Commons.csproj", "{1101F57F-6A96-4F0F-8759-188FABB70D12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +23,22 @@ Global
 		{94B32A72-2EB5-4C23-A920-75DA1850D81C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94B32A72-2EB5-4C23-A920-75DA1850D81C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94B32A72-2EB5-4C23-A920-75DA1850D81C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54C10275-1EDD-4BB7-AA46-46A1392A7DB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54C10275-1EDD-4BB7-AA46-46A1392A7DB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54C10275-1EDD-4BB7-AA46-46A1392A7DB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54C10275-1EDD-4BB7-AA46-46A1392A7DB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{954772A2-4C28-46FB-BA66-6CA4C3554D7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{954772A2-4C28-46FB-BA66-6CA4C3554D7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{954772A2-4C28-46FB-BA66-6CA4C3554D7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{954772A2-4C28-46FB-BA66-6CA4C3554D7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A03BB365-3A53-4FFC-A49C-EB1AC9C14251}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A03BB365-3A53-4FFC-A49C-EB1AC9C14251}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A03BB365-3A53-4FFC-A49C-EB1AC9C14251}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A03BB365-3A53-4FFC-A49C-EB1AC9C14251}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1101F57F-6A96-4F0F-8759-188FABB70D12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1101F57F-6A96-4F0F-8759-188FABB70D12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1101F57F-6A96-4F0F-8759-188FABB70D12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1101F57F-6A96-4F0F-8759-188FABB70D12}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

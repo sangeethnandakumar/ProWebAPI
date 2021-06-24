@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ProWeb.Service.Interfaces;
 using ProWebAPI.Attributes;
 using ProWebAPI.Modal;
 using ProWebAPI.RequestDtos;
@@ -20,26 +21,36 @@ namespace ProWebAPI.Controllers
     public class StudentsController : ControllerBase
     {
         private readonly IConfiguration configuration;
+        private readonly IUserService userService;
+        private readonly IProjectService projectService;
 
-        public StudentsController(IConfiguration configuration)
+        public StudentsController(IConfiguration configuration, IUserService userService, IProjectService projectService)
         {
             this.configuration = configuration;
+            this.userService = userService;
+            this.projectService = projectService;
         }
 
         [HttpGet]
         [MapToApiVersion("1.0")]
         [Route("Success")]
-        public Response Success()
+        public Response Success(int id)
         {
-            Thread.Sleep(1000);
-            return new SuccessResponse<object>
+            var user = userService.GetUserById(id);
+            if (user.IsSuccess)
             {
-                Data = new
+                return new SuccessResponse<ProWeb.Entities.User>
                 {
-                    FirstName = "Old",
-                    LastName = "Version"
-                }
-            };
+                    Data = user.Data
+                };
+            }
+            else
+            {
+                return new ErrorResponse
+                {
+                    Info = user.Messages.ToList()
+                };
+            }
         }
 
         [HttpGet]

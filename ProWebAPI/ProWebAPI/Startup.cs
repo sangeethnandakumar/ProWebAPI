@@ -10,6 +10,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using OData.Swagger.Services;
+using ProWeb.Service.Implementations;
+using ProWeb.Service.Interfaces;
 using ProWebAPI.Extensions;
 using ProWebAPI.Filters;
 using System;
@@ -57,6 +59,10 @@ namespace ProWebAPI
             services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
             services.AddOData();
             services.AddOdataSwaggerSupport();
+
+            //DI Components
+            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IProjectService, ProjectService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

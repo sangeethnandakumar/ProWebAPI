@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>ProWeb.Entities</AssemblyName>
+    <RootNamespace>ProWeb.Entities</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.2" />
+    <PackageReference Include="Twileloop.ExpressGlobalExceptionHandler" Version="1.0.0" />
+  </ItemGroup>
+
+</Project>

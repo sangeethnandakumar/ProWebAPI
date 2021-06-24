@@ -19,9 +19,10 @@ namespace ProWebAPI.Modal
 
         ERR02, // => Unsupported OData Query (400)
         ERR03, // => Unhandled exception on server (500)
+        ERR04, // => Any default handled exceptions
 
         //CUSTOM CODES
-        ERR04
+        ERR05
     }
 
     public class Response
@@ -51,15 +52,9 @@ namespace ProWebAPI.Modal
         {
             ResponseStatus = ResponseStatus.FAILED;
             Status = ResponseStatus.FAILED.ToString();
-            ErrorCode = ErrorCodes.ERR01.ToString();
+            ErrorCode = ErrorCodes.ERR04.ToString();
             Info = new List<string>();
+            Message = "Request was not successfull";
         }
-    }
-
-    public class Dto<T>
-    {
-        public bool IsSuccess { get; set; }
-        public string Error { get; set; }
-        public T Data { get; set; }
     }
 }
