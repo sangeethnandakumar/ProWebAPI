@@ -7,10 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Twileloop.ExpressSecurity" Version="1.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\ProWeb.Commons\ProWeb.Commons.csproj" />
 	  <ProjectReference Include="..\ProWeb.Data\ProWeb.Data.csproj" />
 	  <ProjectReference Include="..\ProWeb.Entities\ProWeb.Entities.csproj" />
