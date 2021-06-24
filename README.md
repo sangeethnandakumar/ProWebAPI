@@ -455,4 +455,24 @@ Allow member casing (which will be in pascal case for props) so that OData query
             })
 ```
 
-# Redis Cache
+# EF Core + UnitOfWork
+Add supporting class libraries
+```
+ProWeb.Entities
+ProWeb.Service
+ProWeb.Data
+ProWeb.Commons
+```
+Install the required packages on `ProWeb.Data`
+```
+Microsoft.EntityFrameworkCore
+Microsoft.EntityFrameworkCore.Design
+Microsoft.EntityFrameworkCore.SqlServer
+Microsoft.EntityFrameworkCore.Tools
+```
+To run migrations
+`SET ProWeb.Data as [Startup Project] and run migrations`
+```
+Add-Migration Test
+Update-Database
+```
