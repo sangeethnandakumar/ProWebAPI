@@ -4,10 +4,15 @@ ASP.NET Core API with all proper standards
 ### Standards Implemented
 | Name | Description
 | ------ | ------
+| Swagger | Implementation of Swagger OpenAPI standards
 | Standard Response | Implementation of a standard response pattern for DTO and internal
-| Versioning | Supports versioned endpoints 'api/v1/' using API versioningccc
+| Versioning | Supports versioned endpoints using API Microsoft MVC Versioning
 | Environment Variable | Dynamic environment based appsettings and configurations
 | OData v4 | Support for endpoints with OData for easy client manipulation
+| Global Exception Handler | Enables standard error response for any 500 server errors
+| Response Casing | Pascal casing with Newtonsoft
+| OAuth v2 | Add support for OAuth from other repo (No imp here)
+| Redis Cache | Implementing caching with Redis
 
 # Swagger
 Install Swagger
@@ -42,6 +47,71 @@ Setup DI
                 endpoints.MapControllers();
             });
         }
+```
+
+# Standard Resoponse for API
+Standard response
+```csharp
+namespace ProWebAPI.Modal
+{
+    public enum ResponseStatus
+    {
+        SUCCESS,
+        WARNING,
+        FAILED
+    }
+
+    public enum ErrorCodes
+    {
+        //RESERVED
+        ERR01, // => Invalid request validation (400)
+
+        ERR02, // => Unsupported OData Query (400)
+        ERR03, // => Unhandled exception on server (500)
+
+        //CUSTOM CODES
+        ERR04
+    }
+
+    public class Response
+    {
+        protected ResponseStatus ResponseStatus { get; set; }
+        public string Status { get; set; }
+    }
+
+    public class SuccessResponse<T> : Response
+    {
+        public T Data { get; set; }
+
+        public SuccessResponse()
+        {
+            ResponseStatus = ResponseStatus.SUCCESS;
+            Status = ResponseStatus.SUCCESS.ToString();
+        }
+    }
+
+    public class ErrorResponse : Response
+    {
+        public string ErrorCode { get; set; }
+        public string Message { get; set; }
+        public List<string> Info { get; set; }
+
+        public ErrorResponse()
+        {
+            ResponseStatus = ResponseStatus.FAILED;
+            Status = ResponseStatus.FAILED.ToString();
+            ErrorCode = ErrorCodes.ERR01.ToString();
+            Info = new List<string>();
+        }
+    }
+
+    public class Dto<T>
+    {
+        public bool IsSuccess { get; set; }
+        public string Error { get; set; }
+        public T Data { get; set; }
+    }
+}
 ```
 
 # Versioning
@@ -120,7 +190,7 @@ namespace ProWebAPI.RequestDtos
         {
             RuleFor(x => x.FirstName).NotNull().NotEmpty();
             RuleFor(x => x.LastName).NotNull().NotEmpty();
-            endpoints.Select().Count().Filter().OrderBy().MaxTop(100).Expand();
+            RuleFor(x => x.Age).NotNull().GreaterThan(0).LessThan(150).NotEmpty();
         }
     }
 }
@@ -165,30 +235,14 @@ namespace ProWebAPI.Filters
 ```
 Register the filter and turn off [ApiController] auto 400 Bad Request intercept
 ```csharp
-  public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddControllers()
-                .ConfigureApiBehaviorOptions(options =>
-                {
-                    options.SuppressModelStateInvalidFilter = true;
-                });
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProWebAPI", Version = "v1" });
-                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
-            });
-            services.AddApiVersioning(options =>
-            {
-                options.AssumeDefaultVersionWhenUnspecified = true;
-                options.DefaultApiVersion = new ApiVersion(1, 0);
-                options.ReportApiVersions = true;
-            });
-            services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
-            services.AddMvc(options =>
+ services.AddControllers(options =>
             {
                 options.Filters.Add<ValidationFilter>();
+            })
+             .ConfigureApiBehaviorOptions(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
             });
-        }
 ```
 
 # AppSettings.json
@@ -256,7 +310,7 @@ Configure OData
             {
                 endpoints.MapControllers();
                 endpoints.EnableDependencyInjection();
-                endpoints.Select().Count().Filter().OrderBy().MaxTop(100);
+                endpoints.Select().Count().Filter().OrderBy().MaxTop(100).Expand();
             });
 ```
 Override [EnableQuery] attribute with [EnableOData] to catch errors and return standard response
@@ -281,7 +335,22 @@ namespace ProWebAPI.Attributes
                     Status = ResponseStatus.WARNING.ToString()
                 };
 
-                request.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                request.HttpContext.Response.ContentType = "application/json";
+                request.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+                request.HttpContext.Response.WriteAsJsonAsync(errorResponse);
+                return;
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = new ErrorResponse
+                {
+                    ErrorCode = ErrorCodes.ERR03.ToString(),
+                    Message = "Something went wrong",
+                    Status = ResponseStatus.FAILED.ToString(),
+                    Info = new List<string>() { "An operation on the server resulted in failure" }
+                };
+                request.HttpContext.Response.ContentType = "application/json";
+                request.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 request.HttpContext.Response.WriteAsJsonAsync(errorResponse);
                 return;
             }
@@ -313,3 +382,76 @@ Query by URL
 ```url
 https://localhost:44351/api/v2/Students/Success?   $expand=data(  $filter= age gt 11; $orderby=Name desc; $select=Name  )
 ```
+
+# Global Exception Handler
+Create the Middleware
+```csharp
+namespace ProWebAPI.Middlewares
+{
+    public class ExceptionMiddleware
+    {
+        private readonly RequestDelegate _next;
+
+        public ExceptionMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task InvokeAsync(HttpContext context)
+        {
+            try
+            {
+                await _next(context);
+            }
+            catch (Exception)
+            {
+                //Write exception log here
+                await HandleExceptionAsync(context);
+            }
+        }
+
+        private Task HandleExceptionAsync(HttpContext context)
+        {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            var serverError = new ErrorResponse
+            {
+                ErrorCode = ErrorCodes.ERR03.ToString(),
+                Message = "Something went wrong",
+                Status = ResponseStatus.FAILED.ToString(),
+                Info = new List<string>() { "An operation on the server resulted in failure" }
+            };
+            return context.Response.WriteAsJsonAsync(serverError);
+        }
+    }
+}
+```
+Create an extension methord for app builder
+```csharp
+namespace ProWebAPI.Extensions
+{
+    public static class ExceptionExtensions
+    {
+        public static void UseGlobalExceptionHandler(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<ExceptionMiddleware>();
+        }
+    }
+}
+```
+Register the middleware
+```csharp
+app.UseGlobalExceptionHandler();
+```
+
+# Response Casing
+Allow member casing (which will be in pascal case for props) so that OData query result won't conflict with casing
+```csharp
+ services.AddControllers()
+            .AddNewtonsoftJson(options =>
+            {
+                options.UseMemberCasing();
+            })
+```
+
+# Redis Cache
