@@ -12,8 +12,8 @@ ASP.NET Core API with all proper standards
 | Global Exception Handler | Enables standard error response for any 500 server errors
 | Response Casing | Pascal casing with Newtonsoft
 | OAuth v2 | Add support for OAuth from other repo (No imp here)
-| EF Core With UnitOfWork And Constrains | Easy CRUD using EF Core
-| Redis Cache | Implementing caching with Redis
+| EF Core Repo structing | UnitOfWork implementation and auto disposal
+| Redis Cache | Implementing caching with Redis (In Prog..)
 
 # Swagger
 Install Swagger
