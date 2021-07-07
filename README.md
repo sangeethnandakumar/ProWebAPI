@@ -6,7 +6,7 @@ ASP.NET Core API with all proper standards
 | ------ | ------
 | Swagger | Implementation of Swagger OpenAPI standards
 | Standard Response | Implementation of a standard response pattern for DTO and internal
-| Versioning | Supports versioned endpoints using API Microsoft MVC Versioning
+| Versioning | Supports versioned endpoints using Microsoft MVC API Versioning
 | Environment Variable | Dynamic environment based appsettings and configurations
 | OData v4 | Support for endpoints with OData for easy client manipulation
 | Global Exception Handler | Enables standard error response for any 500 server errors
