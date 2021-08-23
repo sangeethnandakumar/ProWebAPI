@@ -1,23 +1,18 @@
 using FluentValidation.AspNetCore;
-using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using OData.Swagger.Services;
 using ProWeb.Service.Implementations;
 using ProWeb.Service.Interfaces;
 using ProWebAPI.Extensions;
 using ProWebAPI.Filters;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.OData;
 
 namespace ProWebAPI
 {
@@ -57,12 +52,11 @@ namespace ProWebAPI
                 options.ReportApiVersions = true;
             });
             services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
-            services.AddOData();
+            services.AddControllers().AddOData(x=>x.Select().Count().Filter().OrderBy().SetMaxTop(100).Expand());
             services.AddOdataSwaggerSupport();
 
             //DI Components
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IProjectService, ProjectService>();
+            services.AddSingleton<IGoalService, GoalService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -73,17 +67,12 @@ namespace ProWebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProWebAPI v1"));
             }
-
             app.UseRouting();
-
             app.UseAuthorization();
             app.UseGlobalExceptionHandler();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.EnableDependencyInjection();
-                endpoints.Select().Count().Filter().OrderBy().MaxTop(100).Expand();
             });
         }
     }

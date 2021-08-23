@@ -7,14 +7,12 @@ namespace ProWeb.Data
     public class UnitOfWork : IUnitOfWork
     {
         private readonly MyDbContext context;
-        public IUserRepository Users { get; private set; }
-        public IProjectRepository Projects { get; private set; }
+        public IGoalRepository Goals { get; private set; }
 
         public UnitOfWork(MyDbContext context)
         {
             this.context = context;
-            Users = new UserRepository(context);
-            Projects = new ProjectRepository(context);
+            Goals = new GoalRepository(context);
         }
 
         public int Complete()

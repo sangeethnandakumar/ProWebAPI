@@ -1,7 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProWeb.Data\ProWeb.Data.csproj" />
+    <ProjectReference Include="..\ProWeb.Entities\ProWeb.Entities.csproj" />
+  </ItemGroup>
 
 </Project>

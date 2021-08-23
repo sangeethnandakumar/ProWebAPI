@@ -5,8 +5,7 @@ namespace ProWeb.Data
 {
     public class MyDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
-        public DbSet<Project> Projects { get; set; }
+        public DbSet<Goal> Goals { get; set; }
 
         public MyDbContext()
         { }
@@ -23,7 +22,7 @@ namespace ProWeb.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
-            builder.UseSqlServer(@"Server=DESKTOP-QJ02OLT\SQLEXPRESS;Database=JetTask;Trusted_Connection=True;");
+            builder.UseSqlServer(@"Server=DESKTOP-QJ02OLT\SQLEXPRESS;Database=Activity;Trusted_Connection=True;");
         }
     }
 }

@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 namespace ProWeb.Service.Interfaces
 {
-    public interface IProjectService
+    public interface IGoalService
     {
-        public IEnumerable<Project> GetMyProjects();
     }
 }

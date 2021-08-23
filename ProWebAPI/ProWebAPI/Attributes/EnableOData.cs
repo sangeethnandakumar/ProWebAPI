@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNet.OData;
-using Microsoft.AspNet.OData.Query;
+﻿using Microsoft.AspNetCore.OData;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.Http;
 using Microsoft.OData;
 using Newtonsoft.Json;
